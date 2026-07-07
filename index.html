@@ -1,487 +1,705 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8" />
-<title>Streams 학생용 입력판</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #f5f7fb;
-    text-align: center;
-    padding: 28px;
-  }
-  h1 { margin-bottom: 8px; }
-  .guide {
-    font-size: 18px;
-    margin-bottom: 18px;
-    line-height: 1.5;
-  }
-  #turnBox, #scoreBox {
-    display: inline-block;
-    background: white;
-    border: 3px solid #222;
-    border-radius: 14px;
-    padding: 14px 28px;
-    font-size: 26px;
-    font-weight: bold;
-    margin: 10px;
-  }
-  #row {
-    display: flex;
-    justify-content: center;
-    gap: 7px;
-    flex-wrap: wrap;
-    margin: 20px auto;
-    max-width: 1180px;
-  }
-  .cell {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-  }
-  .index {
-    font-size: 13px;
-    color: #555;
-  }
-  input {
-    width: 50px;
-    height: 50px;
-    font-size: 22px;
-    text-align: center;
-    border: 2px solid #444;
-    border-radius: 8px;
-    background: white;
-  }
-  input:focus { outline: 3px solid #9ec5ff; }
-  input.locked {
-    background: #ddd;
-    color: #222;
-  }
-  input.blocked {
-    background: #f3f3f3;
-    color: #999;
-  }
-  input.invalid {
-    border-color: #d93025;
-    background: #ffecec;
-  }
-  input.duplicate {
-    border-color: #f29900;
-    background: #fff4d6;
-  }
-  input.activeCell {
-    border-color: #2f80ed;
-    background: #eaf2ff;
-  }
-  input.selectedCell {
-    outline: 3px solid #111;
-  }
-  input.wild {
-    background: #fff1a8;
-    font-weight: bold;
-  }
-  button {
-    font-size: 18px;
-    padding: 11px 18px;
-    margin: 8px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    background: #2f80ed;
-    color: white;
-  }
-  button:hover { background: #1c5fb8; }
-  #wildBtn { background: #f2a900; }
-  #clearBtn { background: #6c757d; }
-  #resetBtn { background: #eb5757; }
-  #message {
-    min-height: 28px;
-    font-size: 17px;
-    font-weight: bold;
-    margin: 12px;
-  }
-  .warning { color: #d93025; }
-  .notice { color: #8a5a00; }
-  .ok { color: #137333; }
-  table {
-    margin: 24px auto;
-    border-collapse: collapse;
-    background: white;
-  }
-  th, td {
-    border: 1px solid #888;
-    padding: 8px 15px;
-    font-size: 16px;
-  }
-  th { background: #e9eef8; }
-  .rule {
-    max-width: 820px;
-    margin: 18px auto;
-    text-align: left;
-    background: white;
-    padding: 16px 20px;
-    border-radius: 12px;
-    line-height: 1.6;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Streams Classroom</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans KR", sans-serif;
+      background: #f4f7fb;
+      color: #222;
+      text-align: center;
+    }
+
+    header {
+      background: #1f4f8f;
+      color: white;
+      padding: 18px 12px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 34px;
+    }
+
+    header p {
+      margin: 8px 0 0;
+      font-size: 16px;
+      opacity: 0.95;
+    }
+
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 22px 14px 40px;
+    }
+
+    .status-area {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .status-card {
+      background: white;
+      border: 3px solid #222;
+      border-radius: 16px;
+      padding: 14px 22px;
+      min-width: 220px;
+      font-size: 24px;
+      font-weight: bold;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+    }
+
+    #board {
+      display: grid;
+      grid-template-columns: repeat(20, minmax(44px, 1fr));
+      gap: 7px;
+      margin: 20px auto;
+      width: 100%;
+    }
+
+    .cell-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      align-items: center;
+    }
+
+    .cell-number {
+      font-size: 12px;
+      color: #555;
+    }
+
+    .stream-cell {
+      width: 100%;
+      min-width: 42px;
+      height: 54px;
+      border: 2px solid #444;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 23px;
+      font-weight: bold;
+      background: white;
+    }
+
+    .stream-cell:focus {
+      outline: 4px solid #9ec5ff;
+    }
+
+    .stream-cell.selected {
+      border-color: #111;
+      outline: 3px solid #111;
+    }
+
+    .stream-cell.editing {
+      border-color: #0b63ce;
+      background: #e8f1ff;
+    }
+
+    .stream-cell.locked {
+      background: #d8d8d8;
+      color: #222;
+      cursor: not-allowed;
+    }
+
+    .stream-cell.blocked {
+      background: #f1f1f1;
+      color: #aaa;
+    }
+
+    .stream-cell.invalid {
+      border-color: #d93025;
+      background: #ffecec;
+    }
+
+    .stream-cell.duplicate {
+      border-color: #f29900;
+      background: #fff4d6;
+    }
+
+    .stream-cell.wild {
+      background: #ffe88a;
+    }
+
+    .button-area {
+      margin: 16px 0 8px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 13px 20px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      color: white;
+      background: #2f80ed;
+    }
+
+    button:hover {
+      filter: brightness(0.92);
+    }
+
+    #wildButton {
+      background: #f2a900;
+      color: #222;
+    }
+
+    #clearButton {
+      background: #6c757d;
+    }
+
+    #resetButton {
+      background: #e24a4a;
+    }
+
+    #message {
+      min-height: 32px;
+      margin: 12px 0;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .warning { color: #d93025; }
+    .notice { color: #8a5a00; }
+    .ok { color: #137333; }
+
+    .panel {
+      background: white;
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin: 18px auto;
+      text-align: left;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+    }
+
+    .panel h2 {
+      margin-top: 0;
+      font-size: 22px;
+      text-align: center;
+    }
+
+    .panel p {
+      line-height: 1.65;
+      margin: 8px 0;
+      font-size: 16px;
+    }
+
+    table {
+      border-collapse: collapse;
+      margin: 12px auto 0;
+      background: white;
+      width: min(760px, 100%);
+    }
+
+    th, td {
+      border: 1px solid #888;
+      padding: 8px 12px;
+      font-size: 15px;
+      text-align: center;
+    }
+
+    th {
+      background: #e9eef8;
+    }
+
+    .runs {
+      text-align: center;
+      font-size: 17px;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 900px) {
+      #board {
+        grid-template-columns: repeat(10, minmax(44px, 1fr));
+      }
+    }
+
+    @media (max-width: 520px) {
+      header h1 {
+        font-size: 27px;
+      }
+
+      .status-card {
+        min-width: 160px;
+        font-size: 20px;
+      }
+
+      #board {
+        grid-template-columns: repeat(5, minmax(48px, 1fr));
+      }
+
+      .stream-cell {
+        height: 52px;
+      }
+
+      button {
+        width: 100%;
+        max-width: 310px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>Streams 학생용 입력판</h1>
-  <div class="guide">
-    한 칸에 숫자를 입력하면, 그 칸을 <b>입력잠금</b>하거나 <b>입력 지우기</b> 전까지 다른 칸에는 입력할 수 없습니다.
-  </div>
+  <header>
+    <h1>Streams Classroom</h1>
+    <p>숫자를 원하는 칸에 배치하고, 입력잠금으로 한 칸씩 확정하세요.</p>
+  </header>
 
-  <div>
-    <div id="turnBox">현재 1번째 숫자 입력</div>
-    <div id="scoreBox">현재 점수: 0점</div>
-  </div>
+  <main>
+    <section class="status-area">
+      <div id="turnStatus" class="status-card">1번째 숫자 입력</div>
+      <div id="scoreStatus" class="status-card">현재 점수: 0점</div>
+      <div id="longestStatus" class="status-card">최장 길이: 0칸</div>
+    </section>
 
-  <div id="row"></div>
+    <section id="board"></section>
 
-  <button type="button" onclick="insertWild()" id="wildBtn">★ 와일드카드 입력</button>
-  <button type="button" onclick="clearCurrent()" id="clearBtn">입력 지우기</button>
-  <button type="button" onclick="lockCurrentInput()">입력잠금</button>
-  <button type="button" onclick="resetAll()" id="resetBtn">게임 초기화</button>
+    <section class="button-area">
+      <button type="button" id="wildButton">★ 와일드카드</button>
+      <button type="button" id="clearButton">입력 지우기</button>
+      <button type="button" id="lockButton">입력잠금</button>
+      <button type="button" id="resetButton">게임 초기화</button>
+    </section>
 
-  <div id="message"></div>
+    <div id="message"></div>
 
-  <div class="rule">
-    <b>입력 규칙</b><br>
-    ① 한 칸에 숫자를 입력합니다.<br>
-    ② 숫자를 입력한 칸은 파란색으로 표시됩니다.<br>
-    ③ 그 칸을 <b>입력잠금</b>하거나 <b>입력 지우기</b> 전까지 다른 칸에는 입력할 수 없습니다.<br>
-    ④ 입력잠금을 누르면 그 칸은 게임 초기화 전까지 수정할 수 없습니다.<br>
-    ⑤ ★는 와일드카드입니다. 먼저 넣고 싶은 빈 칸을 클릭한 뒤 와일드카드 버튼을 누르세요.<br>
-    ⑥ 점수는 현재 잠긴 숫자열을 기준으로 자동 계산됩니다.
-  </div>
+    <section class="panel">
+      <h2>사용 방법</h2>
+      <p>① 원하는 빈 칸을 클릭한 뒤 숫자를 입력합니다.</p>
+      <p>② 숫자를 입력한 칸은 파란색으로 표시됩니다.</p>
+      <p>③ <b>입력잠금</b>을 누르면 그 칸만 잠기며, 게임 초기화 전까지 수정할 수 없습니다.</p>
+      <p>④ 숫자를 입력한 상태에서는 그 숫자를 잠그거나 지우기 전까지 다른 칸에 입력할 수 없습니다.</p>
+      <p>⑤ 와일드카드는 넣고 싶은 빈 칸을 먼저 클릭한 뒤 <b>★ 와일드카드</b> 버튼을 누르면 됩니다.</p>
+    </section>
 
-  <h3>점수계산표</h3>
-  <table>
-    <tr><th>이어진 오름차순 숫자 개수</th><th>점수</th></tr>
-    <tr><td>1개</td><td>0점</td></tr>
-    <tr><td>2개</td><td>1점</td></tr>
-    <tr><td>3개</td><td>3점</td></tr>
-    <tr><td>4개</td><td>5점</td></tr>
-    <tr><td>5개</td><td>7점</td></tr>
-    <tr><td>6개</td><td>9점</td></tr>
-    <tr><td>7개</td><td>11점</td></tr>
-    <tr><td>8개</td><td>15점</td></tr>
-    <tr><td>9개</td><td>20점</td></tr>
-    <tr><td>10개</td><td>25점</td></tr>
-    <tr><td>11개</td><td>30점</td></tr>
-    <tr><td>12개</td><td>35점</td></tr>
-    <tr><td>13개</td><td>40점</td></tr>
-    <tr><td>14개</td><td>50점</td></tr>
-    <tr><td>15개</td><td>60점</td></tr>
-    <tr><td>16개</td><td>70점</td></tr>
-    <tr><td>17개</td><td>85점</td></tr>
-    <tr><td>18개</td><td>100점</td></tr>
-    <tr><td>19개</td><td>150점</td></tr>
-    <tr><td>20개</td><td>300점</td></tr>
-  </table>
+    <section class="panel">
+      <h2>현재 숫자열</h2>
+      <div id="runDisplay" class="runs">아직 잠긴 숫자열이 없습니다.</div>
+    </section>
 
-<script>
-  const row = document.getElementById("row");
-  const message = document.getElementById("message");
-  const turnBox = document.getElementById("turnBox");
-  const scoreBox = document.getElementById("scoreBox");
+    <section class="panel">
+      <h2>점수계산표</h2>
+      <table>
+        <tr><th>이어진 오름차순 숫자 개수</th><th>점수</th></tr>
+        <tr><td>1개</td><td>0점</td></tr>
+        <tr><td>2개</td><td>1점</td></tr>
+        <tr><td>3개</td><td>3점</td></tr>
+        <tr><td>4개</td><td>5점</td></tr>
+        <tr><td>5개</td><td>7점</td></tr>
+        <tr><td>6개</td><td>9점</td></tr>
+        <tr><td>7개</td><td>11점</td></tr>
+        <tr><td>8개</td><td>15점</td></tr>
+        <tr><td>9개</td><td>20점</td></tr>
+        <tr><td>10개</td><td>25점</td></tr>
+        <tr><td>11개</td><td>30점</td></tr>
+        <tr><td>12개</td><td>35점</td></tr>
+        <tr><td>13개</td><td>40점</td></tr>
+        <tr><td>14개</td><td>50점</td></tr>
+        <tr><td>15개</td><td>60점</td></tr>
+        <tr><td>16개</td><td>70점</td></tr>
+        <tr><td>17개</td><td>85점</td></tr>
+        <tr><td>18개</td><td>100점</td></tr>
+        <tr><td>19개</td><td>150점</td></tr>
+        <tr><td>20개</td><td>300점</td></tr>
+      </table>
+    </section>
+  </main>
 
-  let currentInput = null;
-  let selectedInput = null;
+  <script>
+    const board = document.getElementById("board");
+    const turnStatus = document.getElementById("turnStatus");
+    const scoreStatus = document.getElementById("scoreStatus");
+    const longestStatus = document.getElementById("longestStatus");
+    const message = document.getElementById("message");
+    const runDisplay = document.getElementById("runDisplay");
 
-  const scoreMap = {
-    1: 0, 2: 1, 3: 3, 4: 5, 5: 7,
-    6: 9, 7: 11, 8: 15, 9: 20, 10: 25,
-    11: 30, 12: 35, 13: 40, 14: 50, 15: 60,
-    16: 70, 17: 85, 18: 100, 19: 150, 20: 300
-  };
+    const wildButton = document.getElementById("wildButton");
+    const clearButton = document.getElementById("clearButton");
+    const lockButton = document.getElementById("lockButton");
+    const resetButton = document.getElementById("resetButton");
 
-  for (let i = 0; i < 20; i++) {
-    const div = document.createElement("div");
-    div.className = "cell";
-    div.innerHTML = `<div class="index">${i + 1}</div><input type="text" inputmode="numeric">`;
-    row.appendChild(div);
-  }
+    const SCORE = {
+      1: 0, 2: 1, 3: 3, 4: 5, 5: 7,
+      6: 9, 7: 11, 8: 15, 9: 20, 10: 25,
+      11: 30, 12: 35, 13: 40, 14: 50, 15: 60,
+      16: 70, 17: 85, 18: 100, 19: 150, 20: 300
+    };
 
-  const inputs = Array.from(document.querySelectorAll("input"));
+    let selectedInput = null;
+    let editingInput = null;
+    const inputs = [];
 
-  function selectInput(input) {
-    if (!input || input.readOnly) return;
-    selectedInput = input;
-    inputs.forEach(i => i.classList.remove("selectedCell"));
-    input.classList.add("selectedCell");
-  }
+    function createBoard() {
+      for (let i = 0; i < 20; i++) {
+        const wrap = document.createElement("div");
+        wrap.className = "cell-wrap";
 
-  inputs.forEach(input => {
-    input.addEventListener("mousedown", () => {
-      selectInput(input);
-    });
+        const label = document.createElement("div");
+        label.className = "cell-number";
+        label.textContent = i + 1;
 
-    input.addEventListener("touchstart", () => {
-      selectInput(input);
-    });
+        const input = document.createElement("input");
+        input.className = "stream-cell";
+        input.type = "text";
+        input.inputMode = "numeric";
+        input.autocomplete = "off";
+        input.dataset.index = i;
 
-    input.addEventListener("focus", () => {
-      if (input.readOnly) return;
-      selectInput(input);
+        wrap.appendChild(label);
+        wrap.appendChild(input);
+        board.appendChild(wrap);
+        inputs.push(input);
+      }
+    }
 
-      if (currentInput && currentInput !== input && currentInput.value.trim() !== "") {
-        input.blur();
-        currentInput.focus();
+    function setMessage(text, type = "") {
+      message.textContent = text;
+      message.className = type;
+    }
+
+    function selectCell(input) {
+      if (!input || input.readOnly) return;
+
+      selectedInput = input;
+      inputs.forEach(cell => cell.classList.remove("selected"));
+      input.classList.add("selected");
+    }
+
+    function startEditing(input) {
+      if (!input || input.readOnly) return false;
+
+      if (editingInput && editingInput !== input && editingInput.value.trim() !== "") {
+        editingInput.focus();
         setMessage("먼저 현재 입력한 칸을 잠그거나 지워주세요.", "warning");
-        return;
+        return false;
       }
-    });
 
-    input.addEventListener("beforeinput", (event) => {
-      if (input.readOnly) {
-        event.preventDefault();
-        return;
+      editingInput = input;
+      selectCell(input);
+      markEditing(input);
+      return true;
+    }
+
+    function markEditing(input) {
+      inputs.forEach(cell => cell.classList.remove("editing"));
+      if (input && !input.readOnly && input.value.trim() !== "") {
+        input.classList.add("editing");
       }
-      if (currentInput && currentInput !== input && currentInput.value.trim() !== "") {
-        event.preventDefault();
-        currentInput.focus();
-        setMessage("먼저 현재 입력한 칸을 잠그거나 지워주세요.", "warning");
-      }
-    });
+    }
 
-    input.addEventListener("input", () => {
-      if (input.readOnly) return;
-
+    function normalizeInput(input) {
       let value = input.value.trim();
 
       if (value === "") {
-        if (currentInput === input) currentInput = null;
-        input.classList.remove("activeCell", "wild");
-        validateAll();
-        updateState();
+        input.classList.remove("wild", "editing");
+        if (editingInput === input) editingInput = null;
         return;
       }
 
-      if (currentInput && currentInput !== input) {
-        input.value = "";
-        currentInput.focus();
+      if (value.includes("★") || value.includes("*")) {
+        input.value = "★";
+        input.classList.add("wild");
+        return;
+      }
+
+      input.value = value.replace(/[^0-9]/g, "").slice(0, 2);
+      input.classList.remove("wild");
+    }
+
+    function attachEvents() {
+      inputs.forEach(input => {
+        input.addEventListener("pointerdown", () => {
+          selectCell(input);
+        });
+
+        input.addEventListener("focus", () => {
+          selectCell(input);
+
+          if (editingInput && editingInput !== input && editingInput.value.trim() !== "") {
+            setTimeout(() => editingInput.focus(), 0);
+            setMessage("먼저 현재 입력한 칸을 잠그거나 지워주세요.", "warning");
+          }
+        });
+
+        input.addEventListener("beforeinput", event => {
+          if (input.readOnly) {
+            event.preventDefault();
+            return;
+          }
+
+          if (editingInput && editingInput !== input && editingInput.value.trim() !== "") {
+            event.preventDefault();
+            editingInput.focus();
+            setMessage("먼저 현재 입력한 칸을 잠그거나 지워주세요.", "warning");
+            return;
+          }
+        });
+
+        input.addEventListener("input", () => {
+          if (!startEditing(input)) {
+            input.value = "";
+            return;
+          }
+
+          normalizeInput(input);
+
+          if (input.value.trim() === "") {
+            if (editingInput === input) editingInput = null;
+          } else {
+            editingInput = input;
+          }
+
+          markEditing(editingInput);
+          validateBoard();
+          updateAll();
+        });
+      });
+
+      wildButton.addEventListener("click", insertWild);
+      clearButton.addEventListener("click", clearEditing);
+      lockButton.addEventListener("click", lockEditing);
+      resetButton.addEventListener("click", resetGame);
+    }
+
+    function insertWild() {
+      const target = selectedInput;
+
+      if (!target || target.readOnly) {
+        setMessage("와일드카드를 넣을 빈 칸을 먼저 클릭하세요.", "warning");
+        return;
+      }
+
+      if (editingInput && editingInput !== target && editingInput.value.trim() !== "") {
+        editingInput.focus();
         setMessage("먼저 현재 입력한 칸을 잠그거나 지워주세요.", "warning");
         return;
       }
 
-      if (value.includes("★")) {
-        input.value = "★";
-        input.classList.add("wild");
-      } else {
-        input.value = value.replace(/[^0-9]/g, "").slice(0, 2);
-        input.classList.remove("wild");
-      }
+      target.value = "★";
+      target.classList.add("wild");
+      editingInput = target;
+      selectCell(target);
+      markEditing(target);
+      target.focus();
 
-      currentInput = input;
-      selectedInput = input;
-      markActiveCell(input);
-      validateAll();
-      updateState();
-    });
-  });
-
-  function setMessage(text, type) {
-    message.textContent = text;
-    message.className = type || "";
-  }
-
-  function markActiveCell(input) {
-    inputs.forEach(i => i.classList.remove("activeCell"));
-    if (input && !input.readOnly) input.classList.add("activeCell");
-  }
-
-  function insertWild() {
-    let target = selectedInput;
-
-    if (!target || target.readOnly) {
-      setMessage("와일드카드를 넣을 빈 칸을 먼저 클릭하세요.", "warning");
-      return;
+      validateBoard();
+      updateAll();
+      setMessage("와일드카드가 입력되었습니다. 입력잠금을 누르면 확정됩니다.", "ok");
     }
 
-    if (currentInput && currentInput !== target && currentInput.value.trim() !== "") {
-      currentInput.focus();
-      setMessage("먼저 현재 입력한 칸을 잠그거나 지워주세요.", "warning");
-      return;
-    }
-
-    target.value = "★";
-    target.classList.add("wild");
-    currentInput = target;
-    selectedInput = target;
-
-    markActiveCell(target);
-    validateAll();
-    updateState();
-
-    target.focus();
-    setMessage("와일드카드가 입력되었습니다. 입력잠금을 누르면 이 칸이 잠깁니다.", "ok");
-  }
-
-  function clearCurrent() {
-    if (!currentInput || currentInput.readOnly) {
-      setMessage("지울 입력 중인 칸이 없습니다.", "notice");
-      return;
-    }
-
-    currentInput.value = "";
-    currentInput.classList.remove("activeCell", "wild", "invalid", "duplicate");
-    currentInput = null;
-    validateAll();
-    updateState();
-    setMessage("입력 중인 칸을 지웠습니다.", "ok");
-  }
-
-  function validateAll() {
-    let hasInvalid = false;
-    let hasDuplicate = false;
-    const count = {};
-
-    inputs.forEach(input => {
-      input.classList.remove("invalid", "duplicate");
-      const value = input.value.trim();
-
-      if (value === "") return;
-
-      if (value === "★") {
-        input.classList.add("wild");
+    function clearEditing() {
+      if (!editingInput || editingInput.readOnly) {
+        setMessage("지울 입력 중인 칸이 없습니다.", "notice");
         return;
       }
 
-      const num = Number(value);
-      if (!Number.isInteger(num) || num < 1 || num > 30) {
-        input.classList.add("invalid");
-        hasInvalid = true;
+      editingInput.value = "";
+      editingInput.classList.remove("editing", "wild", "invalid", "duplicate");
+      editingInput = null;
+
+      validateBoard();
+      updateAll();
+      setMessage("입력 중인 칸을 지웠습니다.", "ok");
+    }
+
+    function lockEditing() {
+      if (!editingInput || editingInput.readOnly || editingInput.value.trim() === "") {
+        setMessage("먼저 숫자 또는 와일드카드를 한 칸에 입력하세요.", "warning");
         return;
       }
 
-      count[value] = (count[value] || 0) + 1;
-    });
+      if (!validateBoard()) return;
 
-    inputs.forEach(input => {
-      const value = input.value.trim();
-      if (value !== "" && value !== "★" && count[value] > 1) {
-        input.classList.add("duplicate");
-        hasDuplicate = true;
+      editingInput.readOnly = true;
+      editingInput.classList.add("locked");
+      editingInput.classList.remove("editing", "selected");
+
+      editingInput = null;
+      selectedInput = null;
+
+      updateAll();
+      setMessage("방금 입력한 칸이 잠겼습니다.", "ok");
+
+      const next = inputs.find(input => !input.readOnly && input.value.trim() === "");
+      if (next) {
+        selectCell(next);
+        next.focus();
       }
-    });
-
-    if (hasInvalid) {
-      setMessage("1~30 사이의 숫자만 입력할 수 있습니다.", "warning");
-    } else if (hasDuplicate) {
-      setMessage("같은 숫자가 있습니다. 실제로 같은 숫자가 나온 경우라면 그대로 진행해도 됩니다.", "notice");
     }
 
-    return !hasInvalid;
-  }
+    function resetGame() {
+      const confirmed = confirm("게임을 초기화할까요?");
+      if (!confirmed) return;
 
-  function lockCurrentInput() {
-    if (!currentInput || currentInput.readOnly || currentInput.value.trim() === "") {
-      setMessage("먼저 잠글 숫자 또는 와일드카드를 한 칸에 입력하세요.", "warning");
-      return;
+      inputs.forEach(input => {
+        input.value = "";
+        input.readOnly = false;
+        input.className = "stream-cell";
+      });
+
+      selectedInput = null;
+      editingInput = null;
+      setMessage("", "");
+      updateAll();
     }
 
-    if (!validateAll()) return;
+    function validateBoard() {
+      let valid = true;
+      let hasDuplicate = false;
+      const counts = {};
 
-    currentInput.readOnly = true;
-    currentInput.classList.add("locked");
-    currentInput.classList.remove("activeCell", "selectedCell");
+      inputs.forEach(input => {
+        input.classList.remove("invalid", "duplicate");
 
-    currentInput = null;
-    selectedInput = null;
-    updateState();
-    calculateScore();
+        const value = input.value.trim();
+        if (value === "") return;
 
-    setMessage("방금 입력한 칸이 잠겼습니다.", "ok");
+        if (value === "★") {
+          input.classList.add("wild");
+          return;
+        }
 
-    const next = inputs.find(i => !i.readOnly && i.value.trim() === "");
-    if (next) {
-      selectedInput = next;
-      selectInput(next);
-      next.focus();
+        const number = Number(value);
+        if (!Number.isInteger(number) || number < 1 || number > 30) {
+          input.classList.add("invalid");
+          valid = false;
+          return;
+        }
+
+        counts[value] = (counts[value] || 0) + 1;
+      });
+
+      inputs.forEach(input => {
+        const value = input.value.trim();
+        if (value !== "" && value !== "★" && counts[value] > 1) {
+          input.classList.add("duplicate");
+          hasDuplicate = true;
+        }
+      });
+
+      if (!valid) {
+        setMessage("1~30 사이의 숫자만 입력할 수 있습니다.", "warning");
+      } else if (hasDuplicate) {
+        setMessage("같은 숫자가 있습니다. 실제로 같은 숫자가 나온 경우라면 그대로 진행해도 됩니다.", "notice");
+      }
+
+      return valid;
     }
-  }
 
-  function getLockedValues() {
-    return inputs.map(input => {
-      if (!input.readOnly) return null;
-      const value = input.value.trim();
-      if (value === "★") return "★";
-      if (value === "") return null;
-      return Number(value);
-    });
-  }
+    function getLockedValues() {
+      return inputs.map(input => {
+        if (!input.readOnly) return null;
 
-  function calculateScore() {
-    const values = getLockedValues();
-    let total = 0;
-    let length = 0;
-    let prevComparable = null;
+        const value = input.value.trim();
+        if (value === "") return null;
+        if (value === "★") return "★";
+        return Number(value);
+      });
+    }
 
-    for (let i = 0; i < values.length; i++) {
-      const cur = values[i];
+    function isAscending(prev, cur) {
+      if (prev === "★" || cur === "★") return true;
+      return cur >= prev;
+    }
 
-      if (cur === null) {
-        if (length > 0) total += scoreMap[length] || 0;
-        length = 0;
-        prevComparable = null;
-        continue;
+    function getRuns() {
+      const values = getLockedValues();
+      const runs = [];
+
+      let currentRun = [];
+      let previous = null;
+
+      for (const value of values) {
+        if (value === null) {
+          if (currentRun.length > 0) runs.push(currentRun);
+          currentRun = [];
+          previous = null;
+          continue;
+        }
+
+        if (currentRun.length === 0) {
+          currentRun.push(value);
+          previous = value;
+          continue;
+        }
+
+        if (isAscending(previous, value)) {
+          currentRun.push(value);
+        } else {
+          runs.push(currentRun);
+          currentRun = [value];
+        }
+
+        previous = value;
       }
 
-      if (length === 0) {
-        length = 1;
-        prevComparable = cur;
-        continue;
+      if (currentRun.length > 0) runs.push(currentRun);
+      return runs;
+    }
+
+    function calculateScore() {
+      const runs = getRuns();
+      let total = 0;
+      let longest = 0;
+
+      for (const run of runs) {
+        total += SCORE[run.length] || 0;
+        longest = Math.max(longest, run.length);
       }
 
-      if (cur === "★" || prevComparable === "★" || cur >= prevComparable) {
-        length++;
+      return { total, longest, runs };
+    }
+
+    function updateAll() {
+      const lockedCount = inputs.filter(input => input.readOnly).length;
+      const { total, longest, runs } = calculateScore();
+
+      turnStatus.textContent = lockedCount >= 20
+        ? "20칸 입력 완료"
+        : `${lockedCount + 1}번째 숫자 입력`;
+
+      scoreStatus.textContent = `현재 점수: ${total}점`;
+      longestStatus.textContent = `최장 길이: ${longest}칸`;
+
+      inputs.forEach(input => {
+        input.classList.remove("blocked");
+        if (
+          !input.readOnly &&
+          editingInput &&
+          editingInput !== input &&
+          editingInput.value.trim() !== ""
+        ) {
+          input.classList.add("blocked");
+        }
+      });
+
+      if (runs.length === 0) {
+        runDisplay.textContent = "아직 잠긴 숫자열이 없습니다.";
       } else {
-        total += scoreMap[length] || 0;
-        length = 1;
+        runDisplay.innerHTML = runs.map((run, index) => {
+          const text = run.map(v => v === "★" ? "★" : String(v)).join(" - ");
+          return `${index + 1}번째 숫자열: ${text} (${run.length}칸, ${SCORE[run.length] || 0}점)`;
+        }).join("<br>");
       }
-
-      prevComparable = cur;
     }
 
-    if (length > 0) total += scoreMap[length] || 0;
-    scoreBox.textContent = `현재 점수: ${total}점`;
-  }
-
-  function updateState() {
-    const lockedCount = inputs.filter(i => i.readOnly).length;
-
-    if (lockedCount >= 20) {
-      turnBox.textContent = "20칸 입력 완료";
-    } else {
-      turnBox.textContent = `현재 ${lockedCount + 1}번째 숫자 입력`;
-    }
-
-    inputs.forEach(input => {
-      input.classList.remove("blocked");
-      if (!input.readOnly && currentInput && currentInput !== input && currentInput.value.trim() !== "") {
-        input.classList.add("blocked");
-      }
-    });
-
-    calculateScore();
-  }
-
-  function resetAll() {
-    inputs.forEach(input => {
-      input.value = "";
-      input.readOnly = false;
-      input.classList.remove("locked", "invalid", "duplicate", "activeCell", "selectedCell", "wild", "blocked");
-    });
-
-    currentInput = null;
-    selectedInput = null;
-    setMessage("", "");
-    updateState();
-  }
-
-  updateState();
-</script>
+    createBoard();
+    attachEvents();
+    updateAll();
+  </script>
 </body>
 </html>
