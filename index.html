@@ -5,10 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Streams Classroom</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: Arial, "Noto Sans KR", sans-serif;
@@ -16,30 +13,14 @@
       color: #222;
       text-align: center;
     }
-
     header {
       background: #1f4f8f;
       color: white;
       padding: 18px 12px;
     }
-
-    header h1 {
-      margin: 0;
-      font-size: 34px;
-    }
-
-    header p {
-      margin: 8px 0 0;
-      font-size: 16px;
-      opacity: 0.95;
-    }
-
-    main {
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 22px 14px 40px;
-    }
-
+    header h1 { margin: 0; font-size: 34px; }
+    header p { margin: 8px 0 0; font-size: 16px; opacity: 0.95; }
+    main { max-width: 1180px; margin: 0 auto; padding: 22px 14px 40px; }
     .status-area {
       display: flex;
       justify-content: center;
@@ -47,7 +28,6 @@
       flex-wrap: wrap;
       margin-bottom: 18px;
     }
-
     .status-card {
       background: white;
       border: 3px solid #222;
@@ -58,7 +38,6 @@
       font-weight: bold;
       box-shadow: 0 3px 8px rgba(0,0,0,0.08);
     }
-
     #board {
       display: grid;
       grid-template-columns: repeat(20, minmax(44px, 1fr));
@@ -66,19 +45,13 @@
       margin: 20px auto;
       width: 100%;
     }
-
     .cell-wrap {
       display: flex;
       flex-direction: column;
       gap: 5px;
       align-items: center;
     }
-
-    .cell-number {
-      font-size: 12px;
-      color: #555;
-    }
-
+    .cell-number { font-size: 12px; color: #555; }
     .stream-cell {
       width: 100%;
       min-width: 42px;
@@ -90,46 +63,14 @@
       font-weight: bold;
       background: white;
     }
-
-    .stream-cell:focus {
-      outline: 4px solid #9ec5ff;
-    }
-
-    .stream-cell.selected {
-      border-color: #111;
-      outline: 3px solid #111;
-    }
-
-    .stream-cell.editing {
-      border-color: #0b63ce;
-      background: #e8f1ff;
-    }
-
-    .stream-cell.locked {
-      background: #d8d8d8;
-      color: #222;
-      cursor: not-allowed;
-    }
-
-    .stream-cell.blocked {
-      background: #f1f1f1;
-      color: #aaa;
-    }
-
-    .stream-cell.invalid {
-      border-color: #d93025;
-      background: #ffecec;
-    }
-
-    .stream-cell.duplicate {
-      border-color: #f29900;
-      background: #fff4d6;
-    }
-
-    .stream-cell.wild {
-      background: #ffe88a;
-    }
-
+    .stream-cell:focus { outline: 4px solid #9ec5ff; }
+    .stream-cell.selected { border-color: #111; outline: 3px solid #111; }
+    .stream-cell.editing { border-color: #0b63ce; background: #e8f1ff; }
+    .stream-cell.locked { background: #d8d8d8; color: #222; cursor: not-allowed; }
+    .stream-cell.blocked { background: #f1f1f1; color: #aaa; }
+    .stream-cell.invalid { border-color: #d93025; background: #ffecec; }
+    .stream-cell.duplicate { border-color: #f29900; background: #fff4d6; }
+    .stream-cell.wild { background: #ffe88a; }
     .button-area {
       margin: 16px 0 8px;
       display: flex;
@@ -137,7 +78,6 @@
       flex-wrap: wrap;
       gap: 10px;
     }
-
     button {
       border: 0;
       border-radius: 12px;
@@ -148,35 +88,19 @@
       color: white;
       background: #2f80ed;
     }
-
-    button:hover {
-      filter: brightness(0.92);
-    }
-
-    #wildButton {
-      background: #f2a900;
-      color: #222;
-    }
-
-    #clearButton {
-      background: #6c757d;
-    }
-
-    #resetButton {
-      background: #e24a4a;
-    }
-
+    button:hover { filter: brightness(0.92); }
+    #wildButton { background: #f2a900; color: #222; }
+    #clearButton { background: #6c757d; }
+    #resetButton { background: #e24a4a; }
     #message {
       min-height: 32px;
       margin: 12px 0;
       font-size: 18px;
       font-weight: bold;
     }
-
     .warning { color: #d93025; }
     .notice { color: #8a5a00; }
     .ok { color: #137333; }
-
     .panel {
       background: white;
       border-radius: 16px;
@@ -185,71 +109,31 @@
       text-align: left;
       box-shadow: 0 3px 8px rgba(0,0,0,0.06);
     }
-
-    .panel h2 {
-      margin-top: 0;
-      font-size: 22px;
-      text-align: center;
-    }
-
-    .panel p {
-      line-height: 1.65;
-      margin: 8px 0;
-      font-size: 16px;
-    }
-
+    .panel h2 { margin-top: 0; font-size: 22px; text-align: center; }
+    .panel p { line-height: 1.65; margin: 8px 0; font-size: 16px; }
     table {
       border-collapse: collapse;
       margin: 12px auto 0;
       background: white;
       width: min(760px, 100%);
     }
-
     th, td {
       border: 1px solid #888;
       padding: 8px 12px;
       font-size: 15px;
       text-align: center;
     }
-
-    th {
-      background: #e9eef8;
-    }
-
-    .runs {
-      text-align: center;
-      font-size: 17px;
-      line-height: 1.7;
-    }
-
+    th { background: #e9eef8; }
+    .runs { text-align: center; font-size: 17px; line-height: 1.7; }
     @media (max-width: 900px) {
-      #board {
-        grid-template-columns: repeat(10, minmax(44px, 1fr));
-      }
+      #board { grid-template-columns: repeat(10, minmax(44px, 1fr)); }
     }
-
     @media (max-width: 520px) {
-      header h1 {
-        font-size: 27px;
-      }
-
-      .status-card {
-        min-width: 160px;
-        font-size: 20px;
-      }
-
-      #board {
-        grid-template-columns: repeat(5, minmax(48px, 1fr));
-      }
-
-      .stream-cell {
-        height: 52px;
-      }
-
-      button {
-        width: 100%;
-        max-width: 310px;
-      }
+      header h1 { font-size: 27px; }
+      .status-card { min-width: 160px; font-size: 20px; }
+      #board { grid-template-columns: repeat(5, minmax(48px, 1fr)); }
+      .stream-cell { height: 52px; }
+      button { width: 100%; max-width: 310px; }
     }
   </style>
 </head>
@@ -284,6 +168,7 @@
       <p>③ <b>입력잠금</b>을 누르면 그 칸만 잠기며, 게임 초기화 전까지 수정할 수 없습니다.</p>
       <p>④ 숫자를 입력한 상태에서는 그 숫자를 잠그거나 지우기 전까지 다른 칸에 입력할 수 없습니다.</p>
       <p>⑤ 와일드카드는 넣고 싶은 빈 칸을 먼저 클릭한 뒤 <b>★ 와일드카드</b> 버튼을 누르면 됩니다.</p>
+      <p>⑥ 와일드카드는 오름차순 중간에 들어갈 수 있는 숫자 하나로만 인정됩니다. 예: <b>7-★-9 가능</b>, <b>7-★-4 불가능</b></p>
     </section>
 
     <section class="panel">
@@ -373,7 +258,6 @@
 
     function selectCell(input) {
       if (!input || input.readOnly) return;
-
       selectedInput = input;
       inputs.forEach(cell => cell.classList.remove("selected"));
       input.classList.add("selected");
@@ -611,40 +495,68 @@
       });
     }
 
-    function isAscending(prev, cur) {
-      if (prev === "★" || cur === "★") return true;
-      return cur >= prev;
+    function canBeAscendingRun(run) {
+      const fixedNumbers = [];
+
+      run.forEach((value, index) => {
+        if (value !== "★") {
+          fixedNumbers.push({ index, value });
+        }
+      });
+
+      // 숫자끼리 이미 내려가면 와일드카드로 이어줄 수 없습니다.
+      for (let i = 1; i < fixedNumbers.length; i++) {
+        if (fixedNumbers[i].value < fixedNumbers[i - 1].value) return false;
+      }
+
+      // 각 와일드카드는 1~30 중 하나의 숫자 역할을 하며,
+      // 앞쪽 숫자 이상, 뒤쪽 숫자 이하가 되는 값이 존재해야 합니다.
+      for (let i = 0; i < run.length; i++) {
+        if (run[i] !== "★") continue;
+
+        let leftBound = 1;
+        let rightBound = 30;
+
+        for (let j = i - 1; j >= 0; j--) {
+          if (run[j] !== "★") {
+            leftBound = run[j];
+            break;
+          }
+        }
+
+        for (let j = i + 1; j < run.length; j++) {
+          if (run[j] !== "★") {
+            rightBound = run[j];
+            break;
+          }
+        }
+
+        if (leftBound > rightBound) return false;
+      }
+
+      return true;
     }
 
     function getRuns() {
       const values = getLockedValues();
       const runs = [];
-
       let currentRun = [];
-      let previous = null;
 
       for (const value of values) {
         if (value === null) {
           if (currentRun.length > 0) runs.push(currentRun);
           currentRun = [];
-          previous = null;
           continue;
         }
 
-        if (currentRun.length === 0) {
-          currentRun.push(value);
-          previous = value;
-          continue;
-        }
+        const candidate = currentRun.concat([value]);
 
-        if (isAscending(previous, value)) {
-          currentRun.push(value);
+        if (currentRun.length === 0 || canBeAscendingRun(candidate)) {
+          currentRun = candidate;
         } else {
           runs.push(currentRun);
           currentRun = [value];
         }
-
-        previous = value;
       }
 
       if (currentRun.length > 0) runs.push(currentRun);
