@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Streams Classroom</title>
+  <title>Streams Classroom v1.4</title>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -141,6 +141,7 @@
   <header>
     <h1>Streams Classroom</h1>
     <p>숫자를 원하는 칸에 배치하고, 입력잠금으로 한 칸씩 확정하세요.</p>
+    <p style="margin:6px 0 0;font-weight:bold;">v1.4 와일드카드 판정 수정판</p>
   </header>
 
   <main>
@@ -168,7 +169,13 @@
       <p>③ <b>입력잠금</b>을 누르면 그 칸만 잠기며, 게임 초기화 전까지 수정할 수 없습니다.</p>
       <p>④ 숫자를 입력한 상태에서는 그 숫자를 잠그거나 지우기 전까지 다른 칸에 입력할 수 없습니다.</p>
       <p>⑤ 와일드카드는 넣고 싶은 빈 칸을 먼저 클릭한 뒤 <b>★ 와일드카드</b> 버튼을 누르면 됩니다.</p>
-      <p>⑥ 와일드카드는 오름차순 중간에 들어갈 수 있는 숫자 하나로만 인정됩니다. 예: <b>7-★-9 가능</b>, <b>7-★-4 불가능</b></p>
+      <p>⑥ 와일드카드는 <b>1~30 중 숫자 하나</b>로 바꿀 수 있을 때만 연결됩니다. 예: <b>7-★-9 가능</b>, <b>7-★-4 불가능</b></p>
+    </section>
+
+    <section class="panel" style="text-align:center;background:#fff9e8;border:2px solid #f2a900;">
+      <h2>와일드카드 판정 예시</h2>
+      <p><b>7 - ★ - 9</b> : 하나의 숫자열로 인정</p>
+      <p><b>7 - ★ - 4</b> : 숫자열이 끊어짐</p>
     </section>
 
     <section class="panel">
